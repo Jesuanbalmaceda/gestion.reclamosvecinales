@@ -15,8 +15,16 @@
     --border: #3d1f6e; --radius: 14px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 17px; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: var(--fs-base, 17px); }
   h1,h2,h3,h4 { font-family: 'Syne', sans-serif; }
+
+  /* ── ACCESIBILIDAD: TAMAÑO DE FUENTE ── */
+  .font-ctrl { display:flex; align-items:center; gap:4px; background:var(--surface2); border:1px solid var(--border); border-radius:20px; padding:3px 6px; }
+  .font-ctrl-label { font-size:11px; color:var(--muted); font-family:'Syne',sans-serif; font-weight:700; letter-spacing:.5px; margin-right:2px; user-select:none; }
+  .font-btn { width:30px; height:30px; border:none; border-radius:50%; background:var(--surface); color:var(--text); font-size:16px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background .2s; font-family:'Syne',sans-serif; flex-shrink:0; }
+  .font-btn:hover { background:var(--accent); color:#fff; }
+  .font-btn:active { transform:scale(0.92); }
+  .font-size-indicator { font-size:11px; color:var(--muted); min-width:22px; text-align:center; font-family:'Syne',sans-serif; font-weight:700; }
 
   #login-screen { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px; background:radial-gradient(ellipse at 50% -10%,#3d1060 0%,#1a0a2e 55%); }
   .login-box { width:100%; max-width:380px; background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:36px 28px; box-shadow:0 24px 60px rgba(0,0,0,0.5); }
@@ -269,8 +277,13 @@
       <img src="data:image/jpeg;base64,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" alt="Logo" class="topbar-logo-img topbar-logo-tri">
     </div>
     <div class="topbar-right">
+      <div class="font-ctrl" title="Tamaño de letra">
+        <span class="font-ctrl-label">A</span>
+        <button class="font-btn" onclick="cambiarFuente(-1)" title="Letra más chica">−</button>
+        <span class="font-size-indicator" id="font-level-label">M</span>
+        <button class="font-btn" onclick="cambiarFuente(1)" title="Letra más grande">+</button>
+      </div>
       <div class="user-chip"><strong id="topbar-name">—</strong></div>
-      <button class="btn btn-outline btn-sm" onclick="abrirCambioContrasena()" title="Cambiar contraseña">🔑</button>
       <button class="btn btn-outline btn-sm" onclick="doLogout()">Salir</button>
     </div>
   </div>
@@ -894,9 +907,8 @@ async function actualizarBadgeAvisos(override) {
 function poblarSelectorAgentes() {
   const sel = document.getElementById('fm-agentes');
   if (!sel) return;
-  // Incluir agentes Y moderadores
-  const assignables = Object.entries(USERS).filter(([,v])=>v.role==='agent'||v.role==='moderator');
-  sel.innerHTML = assignables.map(([uname,u])=>`<option value="${uname}">${u.name}${u.role==='moderator'?' (MOD)':''}</option>`).join('');
+  const agents = Object.entries(USERS).filter(([,v])=>v.role==='agent');
+  sel.innerHTML = agents.map(([uname,u])=>`<option value="${uname}">${u.name}</option>`).join('');
 }
 
 // AGENT
@@ -1254,38 +1266,6 @@ function exportarCSV(modo) {
   showToast('✔ CSV exportado');
 }
 
-// CAMBIO DE CONTRASEÑA (propio)
-function abrirCambioContrasena() {
-  document.getElementById('modal-title').textContent = '🔑 Cambiar contraseña';
-  document.getElementById('modal-content').innerHTML = `
-    <div class="form-row"><label>Contraseña actual</label><input type="password" id="cp-actual" placeholder="••••••••" autocomplete="current-password"></div>
-    <div class="form-row"><label>Nueva contraseña</label><input type="password" id="cp-nueva" placeholder="Mínimo 4 caracteres" autocomplete="new-password"></div>
-    <div class="form-row"><label>Confirmar nueva contraseña</label><input type="password" id="cp-confirm" placeholder="Repetí la nueva contraseña" autocomplete="new-password"></div>
-    <p class="error-msg hidden" id="cp-error">Error al cambiar la contraseña.</p>
-    <button class="btn btn-primary" onclick="guardarNuevaContrasena()">Guardar nueva contraseña</button>`;
-  document.getElementById('modal').classList.add('open');
-}
-async function guardarNuevaContrasena() {
-  const actual = document.getElementById('cp-actual').value;
-  const nueva  = document.getElementById('cp-nueva').value;
-  const confirm= document.getElementById('cp-confirm').value;
-  const err    = document.getElementById('cp-error');
-  err.classList.add('hidden');
-  if (USERS[currentUser.username]?.pass !== actual) {
-    err.textContent = 'La contraseña actual es incorrecta.'; err.classList.remove('hidden'); return;
-  }
-  if (nueva.length < 4) {
-    err.textContent = 'La nueva contraseña debe tener al menos 4 caracteres.'; err.classList.remove('hidden'); return;
-  }
-  if (nueva !== confirm) {
-    err.textContent = 'Las contraseñas nuevas no coinciden.'; err.classList.remove('hidden'); return;
-  }
-  USERS[currentUser.username].pass = nueva;
-  await saveUsers();
-  closeModalDirect();
-  showToast('✔ Contraseña actualizada');
-}
-
 // SHARED
 function badgeHTML(e){const c=e==='Pendiente'?'badge-pending':e==='En progreso'?'badge-progress':'badge-resolved';return `<span class="badge ${c}">${e}</span>`;}
 function reclamoCard(r,editable){
@@ -1306,26 +1286,6 @@ function openModal(firestoreId,editable){
   const geo=r.lat&&r.lng
     ?`<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Ubicación</div><div style="color:var(--success);font-size:13px">📍 ${parseFloat(r.lat).toFixed(5)}, ${parseFloat(r.lng).toFixed(5)}</div></div>`
     :`<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Ubicación</div><div style="color:var(--muted);font-size:13px">Sin ubicación registrada</div></div>`;
-
-  // Comentario de cierre (solo si ya fue resuelto)
-  const comentarioCierre = r.comentarioCierre
-    ? `<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Comentario de cierre</div><div style="color:var(--success);font-size:13px">✅ ${r.comentarioCierre}</div></div>`
-    : '';
-
-  // Reasignación: solo admin y moderador, y solo si ya tiene agentes asignados
-  const puedeReasignar = currentUser && (currentUser.role==='admin'||currentUser.role==='moderator');
-  const tieneAsignados = (Array.isArray(r.agentes)&&r.agentes.length) || r.agenteUser;
-  const allAssignables = Object.entries(USERS).filter(([,v])=>v.role==='agent'||v.role==='moderator');
-  const currentAgentes = Array.isArray(r.agentes) ? r.agentes : (r.agenteUser ? [r.agenteUser] : []);
-  const reasignarHTML = (puedeReasignar && tieneAsignados) ? `
-    <div class="divider"></div>
-    <div class="form-row">
-      <label>🔄 Reasignar a <span style="font-size:12px;text-transform:none;letter-spacing:0;font-weight:400">(Ctrl+clic para varios)</span></label>
-      <select id="modal-reasignar" multiple style="min-height:100px">
-        ${allAssignables.map(([uname,u])=>`<option value="${uname}" ${currentAgentes.includes(uname)?'selected':''}>${u.name} (${u.role==='moderator'?'MOD':'Agente'})</option>`).join('')}
-      </select>
-    </div>` : '';
-
   document.getElementById('modal-title').textContent='Reclamo — '+r.vecino;
   document.getElementById('modal-content').innerHTML=`
     <div style="display:grid;gap:10px;margin-bottom:4px">
@@ -1338,78 +1298,26 @@ function openModal(firestoreId,editable){
       <div><div style="font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Agente/s asignado/s</div><div>${Array.isArray(r.agentes)&&r.agentes.length ? (r.agentesNombres||r.agentes).join('<br>') : (r.agente||'—')}</div></div>
       <div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Fecha de carga</div><div>${r.fechaCarga||r.fecha||'—'}</div></div>
       ${geo}
-      ${comentarioCierre}
     </div>
     <div class="divider"></div>
     <div class="form-row"><label>Estado</label>
-      <select id="modal-estado" onchange="toggleComentarioCierre(this.value)">
+      <select id="modal-estado">
         <option ${r.estado==='Pendiente'?'selected':''}>Pendiente</option>
         <option ${r.estado==='En progreso'?'selected':''}>En progreso</option>
         <option ${r.estado==='Resuelto'?'selected':''}>Resuelto</option>
       </select>
     </div>
-    <div class="form-row" id="row-comentario-cierre" style="display:${r.estado==='Resuelto'?'block':'none'}">
-      <label>✅ Comentario de cierre <span style="font-size:11px;color:var(--danger);text-transform:none;letter-spacing:0">(requerido al resolver)</span></label>
-      <textarea id="modal-comentario-cierre" placeholder="Describí cómo se resolvió el reclamo…">${r.comentarioCierre||''}</textarea>
-    </div>
     <div class="form-row"><label>Notas de seguimiento</label>
       <textarea id="modal-notas" placeholder="Agregá observaciones…">${r.notas||''}</textarea>
     </div>
-    ${reasignarHTML}
     <button class="btn btn-primary" onclick="actualizarReclamo('${firestoreId}')">Guardar cambios</button>`;
   document.getElementById('modal').classList.add('open');
 }
-function toggleComentarioCierre(val) {
-  const row = document.getElementById('row-comentario-cierre');
-  if (row) row.style.display = val==='Resuelto' ? 'block' : 'none';
-}
 async function actualizarReclamo(firestoreId){
-  const r = reclamos.find(x=>x.firestoreId===firestoreId); if(!r) return;
   const estado=document.getElementById('modal-estado').value;
   const notas=document.getElementById('modal-notas').value;
-  const comentarioCierre = document.getElementById('modal-comentario-cierre')?.value?.trim() || '';
-
-  // Validar comentario de cierre al resolver
-  if (estado==='Resuelto' && !comentarioCierre && !r.comentarioCierre) {
-    showToast('⚠ Ingresá un comentario de cierre antes de resolver.');
-    return;
-  }
-
-  const cambios = { estado, notas };
-  if (estado==='Resuelto' && comentarioCierre) cambios.comentarioCierre = comentarioCierre;
-
-  // Reasignación
-  const selReasig = document.getElementById('modal-reasignar');
-  if (selReasig) {
-    const nuevosAgentes = [...selReasig.selectedOptions].map(o=>o.value);
-    if (nuevosAgentes.length) {
-      const nuevosNombres = nuevosAgentes.map(u => USERS[u]?.name || u);
-      cambios.agentes = nuevosAgentes;
-      cambios.agentesNombres = nuevosNombres;
-      cambios.agente = nuevosNombres.join(', ');
-      cambios.agenteUser = nuevosAgentes[0];
-      // Notificar a los nuevos asignados
-      const anteriorAgentes = Array.isArray(r.agentes) ? r.agentes : (r.agenteUser?[r.agenteUser]:[]);
-      for (const uname of nuevosAgentes) {
-        if (!anteriorAgentes.includes(uname)) {
-          await agregarNotificacion(uname, `🔄 Se te reasignó el reclamo de ${r.vecino} (${r.tipo})`);
-        }
-      }
-    }
-  }
-
-  // Detectar reapertura: estaba Resuelto y ahora vuelve a Pendiente o En progreso
-  const estadoAnterior = r.estado;
-  if (estadoAnterior==='Resuelto' && estado!=='Resuelto') {
-    // Notificar a todos los agentes asignados
-    const agentesAsignados = Array.isArray(r.agentes) ? r.agentes : (r.agenteUser?[r.agenteUser]:[]);
-    for (const uname of agentesAsignados) {
-      await agregarNotificacion(uname, `🔁 Se reabrió el reclamo de ${r.vecino} (${r.tipo}) — nuevo estado: ${estado}`);
-    }
-  }
-
   try {
-    await actualizarReclamoFS(firestoreId, cambios);
+    await actualizarReclamoFS(firestoreId, { estado, notas });
     closeModalDirect();
     showToast('✔ Reclamo actualizado');
   } catch(e) { showToast('❌ Error al actualizar.'); }
@@ -1436,6 +1344,39 @@ document.getElementById('login-user').addEventListener('keydown',e=>{if(e.key===
   } catch(e) {}
 })();
 
+// ── CONTROL DE TAMAÑO DE FUENTE ──────────────────────────
+const FONT_LEVELS = [
+  { label:'XS', size:'14px' },
+  { label:'S',  size:'16px' },
+  { label:'M',  size:'18px' },
+  { label:'L',  size:'21px' },
+  { label:'XL', size:'24px' },
+  { label:'XXL',size:'28px' },
+];
+let fontLevelIndex = 2; // default M
+
+function aplicarFuente(idx) {
+  fontLevelIndex = Math.max(0, Math.min(FONT_LEVELS.length - 1, idx));
+  const level = FONT_LEVELS[fontLevelIndex];
+  document.documentElement.style.setProperty('--fs-base', level.size);
+  const lbl = document.getElementById('font-level-label');
+  if (lbl) lbl.textContent = level.label;
+  try { localStorage.setItem('fontLevel', fontLevelIndex); } catch(e) {}
+}
+
+function cambiarFuente(delta) {
+  aplicarFuente(fontLevelIndex + delta);
+}
+
+// Restaurar tamaño guardado al cargar
+(function restoreFontLevel() {
+  try {
+    const saved = parseInt(localStorage.getItem('fontLevel'));
+    if (!isNaN(saved)) aplicarFuente(saved);
+    else aplicarFuente(2);
+  } catch(e) { aplicarFuente(2); }
+})();
+
 // Exponer funciones globales (requerido con type="module")
 Object.assign(window, {
   doLogin, doLogout,
@@ -1445,11 +1386,11 @@ Object.assign(window, {
   captureGPSMod, geocodeAddressMod, guardarReclamoMod,
   renderStats, renderMapa, renderAdminReclamos, renderAgentes, renderModeradores, renderUsuarios,
   setMapFilter, updateMapMarkers,
-  openModal, actualizarReclamo, toggleComentarioCierre,
+  openModal, actualizarReclamo,
   crearUsuario, confirmarEliminar, eliminarUsuario, editarUsuarioModal, guardarEdicionUsuario,
   exportarCSV, closeModal, closeModalDirect,
   renderAvisos, poblarSelectorAgentes,
-  abrirCambioContrasena, guardarNuevaContrasena
+  cambiarFuente
 });
 </script>
 </body>
