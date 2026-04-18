@@ -1392,11 +1392,22 @@ function openModal(firestoreId,editable){
       <div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Área</div><div>${r.area}</div></div>
       <div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Tipo</div><div>${r.tipo}</div></div>
       <div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Descripción</div><div style="color:var(--muted);font-size:13px">${r.desc}</div></div>
-      <div><div style="font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Agente/s asignado/s</div><div>${Array.isArray(r.agentes)&&r.agentes.length ? (r.agentesNombres||r.agentes).join('<br>') : (r.agente||'—')}</div></div>
       <div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Fecha de carga</div><div>${r.fechaCarga||r.fecha||'—'}</div></div>
       ${geo}
     </div>
     <div class="divider"></div>
+    ${(currentUser.role==='admin'||currentUser.role==='moderator') ? (() => {
+      const asignables = Object.entries(USERS).filter(([,v])=>v.role==='agent'||v.role==='moderator');
+      const actuales = Array.isArray(r.agentes) ? r.agentes : (r.agenteUser ? [r.agenteUser] : []);
+      const opciones = asignables.map(([uname,u])=>{
+        const tag = u.role==='moderator'?' [MOD]':'';
+        const sel = actuales.includes(uname)?'selected':'';
+        return `<option value="${uname}" ${sel}>${u.name}${tag}</option>`;
+      }).join('');
+      return `<div class="form-row"><label>👤 Reasignar a <span style="font-size:11px;text-transform:none;letter-spacing:0;font-weight:400">(Ctrl+clic para varios)</span></label>
+        <select id="modal-agentes" multiple style="min-height:100px">${opciones}</select>
+      </div>`;
+    })() : `<div style="margin-bottom:14px"><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Agente/s asignado/s</div><div>${Array.isArray(r.agentes)&&r.agentes.length?(r.agentesNombres||r.agentes).join('<br>'):(r.agente||'—')}</div></div>`}
     <div class="form-row"><label>Estado</label>
       <select id="modal-estado" onchange="toggleComentFinal(this.value)">
         <option ${r.estado==='Pendiente'?'selected':''}>Pendiente</option>
@@ -1420,6 +1431,28 @@ function openModal(firestoreId,editable){
 async function actualizarReclamo(firestoreId){
   const estado=document.getElementById('modal-estado').value;
   const notas=document.getElementById('modal-notas').value;
+
+  // Reasignación (solo si el selector existe, es decir, rol admin/moderador)
+  const selAgentes = document.getElementById('modal-agentes');
+  let cambiosAgentes = {};
+  if (selAgentes) {
+    const seleccionados = [...selAgentes.selectedOptions].map(o=>o.value);
+    const nombres = seleccionados.map(u => USERS[u]?.name || u);
+    cambiosAgentes = {
+      agentes: seleccionados,
+      agentesNombres: nombres,
+      agente: nombres.join(', ') || '—',
+      agenteUser: seleccionados[0] || ''
+    };
+    // Notificar a los nuevos asignados
+    const r = reclamos.find(x=>x.firestoreId===firestoreId);
+    const anteriores = Array.isArray(r?.agentes) ? r.agentes : [];
+    const nuevos = seleccionados.filter(u => !anteriores.includes(u));
+    for (const uname of nuevos) {
+      await agregarNotificacion(uname, `📋 Se te reasignó el reclamo de ${r?.vecino||''} (${r?.tipo||''}) — ${new Date().toLocaleDateString('es-AR')}`);
+    }
+  }
+
   // Si se está cerrando el reclamo, exigir comentario final
   if (estado === 'Resuelto') {
     const comentFinal = document.getElementById('modal-coment-final')?.value?.trim();
@@ -1427,17 +1460,16 @@ async function actualizarReclamo(firestoreId){
       document.getElementById('modal-coment-final-err')?.classList.remove('hidden');
       return;
     }
-    // Adjuntar el comentario final a las notas
     const notaCompleta = notas + (notas ? '\n' : '') + '✅ Cierre: ' + comentFinal;
     try {
-      await actualizarReclamoFS(firestoreId, { estado, notas: notaCompleta, fechaCierre: new Date().toLocaleDateString('es-AR') });
+      await actualizarReclamoFS(firestoreId, { estado, notas: notaCompleta, fechaCierre: new Date().toLocaleDateString('es-AR'), ...cambiosAgentes });
       closeModalDirect();
       showToast('✔ Reclamo cerrado');
     } catch(e) { showToast('❌ Error al actualizar.'); }
     return;
   }
   try {
-    await actualizarReclamoFS(firestoreId, { estado, notas });
+    await actualizarReclamoFS(firestoreId, { estado, notas, ...cambiosAgentes });
     closeModalDirect();
     showToast('✔ Reclamo actualizado');
   } catch(e) { showToast('❌ Error al actualizar.'); }
